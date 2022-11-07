@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="./bs.min.css" rel="stylesheet">
+    <script src="./jquery.min.js" ></script>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+
+
+    <div class="mb-3">
+        <label for="" class="form-label">City</label>
+        <select class="form-select form-select-lg" name="" id="province">
+            <option selected>Select one</option>
+
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">District</label>
+        <select class="form-select form-select-lg" name="" id="district">
+
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Sub-district</label>
+        <select class="form-select form-select-lg" name="" id="sub-district">
+
+        </select>
+    </div>
+
+    <button class="btn btn-primary"  id="bx">
+            Alert Province / District / Sub-district
+    </button>
+    <script src="./bs.min.js"></script>
+    <script>
+var xs;
+window.onload = loadProinve();
+
+function loadProinve(){
+    $.ajax({
+        type: "GET",
+        url: "https://provinces.open-api.vn/api/?depth=1",
+        dataType: "JSON",
+        success: function (x) {
+            var a = "";
+            for(var i = 0;i < x.length;i++){
+            a += '<option value="'+x[i].code+'">'+x[i].name+'</option>' ;
+            }
+            $('#province').append(a);
+        }
+    });
+
+    // $.getJSON("./provinces.json", {format:"json"}
+    // ).done(function(x){
+    //    xs = x;
+    //     var a = "";
+    //         for(var i = 0;i < x.length;i++){
+    //         a += '<option value="'+x[i].code+'">'+x[i].name+'</option>' ;
+    //         }
+    //         $('#province').append(a);
+    // });
+
+    }
+    $(document).ready(function () {
+
+
+        $('#province').on('change', function () {
+            $("#district, #sub-district").html('');
+            $.ajax({
+        type: "GET",
+        url: "https://provinces.open-api.vn/api/p/"+this.value+"?depth=2",
+        dataType: "JSON",
+        success: function (x) {
+            var a = "";
+            for(var i = 0;i < x.districts.length;i++){
+            a += '<option value="'+x.districts[i].code+'">'+x.districts[i].name+'</option>' ;
+            }
+            $('#district').append(a);
+        }
+    });
+          });
+
+
+
+        $('#district').on('change', function () {
+            $("#sub-district").html('');
+            $.ajax({
+        type: "GET",
+        url: "https://provinces.open-api.vn/api/d/"+this.value+"?depth=2",
+        dataType: "JSON",
+        success: function (x) {
+            var a = "";
+            for(var i = 0;i < x.wards.length;i++){
+            a += '<option value="'+x.wards[i].code+'">'+x.wards[i].name+'</option>' ;
+            }
+            $('#sub-district').append(a);
+        }
+    });
+          });
+    });
+
+    </script>
+  </body>
+</html>
