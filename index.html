@@ -1,14 +1,16 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
     <link href="./bs.min.css" rel="stylesheet">
-    <script src="./jquery.min.js" ></script>
-  </head>
-  <body>
-    <h1>Hello, Moon walk!</h1>
+    <script src="./jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>Hello, Moon walk!! Coi comment dưới thẻ script</h1>
 
 
     <div class="mb-3">
@@ -31,77 +33,85 @@
         </select>
     </div>
 
-    <button class="btn btn-primary"  id="bx">
-            Alert Province / District / Sub-district
+    <button class="btn btn-primary" id="bx">
+        Alert Province / District / Sub-district
     </button>
     <script src="./bs.min.js"></script>
     <script>
-var xs;
-window.onload = loadProinve();
+        var xs;
 
-function loadProinve(){
-    $.ajax({
-        type: "GET",
-        url: "https://provinces.open-api.vn/api/?depth=1",
-        dataType: "JSON",
-        success: function (x) {
-            var a = "";
-            for(var i = 0;i < x.length;i++){
-            a += '<option value="'+x[i].code+'">'+x[i].name+'</option>' ;
-            }
-            $('#province').append(a);
-        }
-    });
+        // Khi mở index.html nó sẽ chạy hàm loadProvince để lấy về cá tĩnh thành,
+        // Không lấy quận/ huyện, phường/ xã
+        window.onload = loadProvince();
 
-    // $.getJSON("./provinces.json", {format:"json"}
-    // ).done(function(x){
-    //    xs = x;
-    //     var a = "";
-    //         for(var i = 0;i < x.length;i++){
-    //         a += '<option value="'+x[i].code+'">'+x[i].name+'</option>' ;
-    //         }
-    //         $('#province').append(a);
-    // });
+        function loadProvince() {
 
-    }
-    $(document).ready(function () {
-
-
-        $('#province').on('change', function () {
-            $("#district, #sub-district").html('');
             $.ajax({
-        type: "GET",
-        url: "https://provinces.open-api.vn/api/p/"+this.value+"?depth=2",
-        dataType: "JSON",
-        success: function (x) {
-            var a = "";
-            for(var i = 0;i < x.districts.length;i++){
-            a += '<option value="'+x.districts[i].code+'">'+x.districts[i].name+'</option>' ;
-            }
-            $('#district').append(a);
+                type: "GET",
+                url: "https://provinces.open-api.vn/api/?depth=1",
+                dataType: "JSON",
+                success: function (x) {
+                    var a = "";
+                    for (var i = 0; i < x.length; i++) {
+                        a += '<option value="' + x[i].code + '">' + x[i].name + '</option>';
+                    }
+                    $('#province').append(a);
+                }
+            });
+
+            // $.getJSON("./provinces.json", {format:"json"}
+            // ).done(function(x){
+            //    xs = x;
+            //     var a = "";
+            //         for(var i = 0;i < x.length;i++){
+            //         a += '<option value="'+x[i].code+'">'+x[i].name+'</option>' ;
+            //         }
+            //         $('#province').append(a);
+            // });
+
         }
-    });
-          });
+        $(document).ready(function () {
+
+            // Khi select tỉnh thành sẽ gửi request kéo quận huyện
+            // của tỉnh/ thành đó về
+            $('#province').on('change', function () {
+                $("#district, #sub-district").html('');
+                $.ajax({
+                    type: "GET",
+                    url: "https://provinces.open-api.vn/api/p/" + this.value + "?depth=2",
+                    dataType: "JSON",
+                    success: function (x) {
+                        var a = "";
+                        for (var i = 0; i < x.districts.length; i++) {
+                            a += '<option value="' + x.districts[i].code + '">' + x
+                                .districts[i].name + '</option>';
+                        }
+                        $('#district').append(a);
+                    }
+                });
+            });
 
 
 
-        $('#district').on('change', function () {
-            $("#sub-district").html('');
-            $.ajax({
-        type: "GET",
-        url: "https://provinces.open-api.vn/api/d/"+this.value+"?depth=2",
-        dataType: "JSON",
-        success: function (x) {
-            var a = "";
-            for(var i = 0;i < x.wards.length;i++){
-            a += '<option value="'+x.wards[i].code+'">'+x.wards[i].name+'</option>' ;
-            }
-            $('#sub-district').append(a);
-        }
-    });
-          });
-    });
-
+            // Tương tự nhưng lấy về phường/ xã của quận/ huyện đó
+            $('#district').on('change', function () {
+                $("#sub-district").html('');
+                $.ajax({
+                    type: "GET",
+                    url: "https://provinces.open-api.vn/api/d/" + this.value + "?depth=2",
+                    dataType: "JSON",
+                    success: function (x) {
+                        var a = "";
+                        for (var i = 0; i < x.wards.length; i++) {
+                            a += '<option value="' + x.wards[i].code + '">' + x.wards[i]
+                                .name + '</option>';
+                        }
+                        $('#sub-district').append(a);
+                    }
+                });
+            });
+        });
     </script>
-  </body>
+</body>
+
 </html>
